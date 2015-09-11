@@ -1,4 +1,6 @@
 
+//to do, fix the png display issue
+
 #import "ViewController.h"
 
 @interface ViewController ()

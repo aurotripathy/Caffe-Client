@@ -10,6 +10,7 @@
 @implementation ViewController
 {
     NSData *pngData;
+    NSData *jpgdata;
     NSData *syncResData;
     NSMutableURLRequest *request;
     UIActivityIndicatorView *indicator;
@@ -23,6 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     pngData = nil;
+    jpgdata = nil;
     [self initPB];
 }
 
@@ -42,13 +44,18 @@
 {
     self.imageView.image = image;
     pngData = UIImagePNGRepresentation(image);
+    NSLog(@"Size of PNG data %lu", (unsigned long)[pngData length]);
+    
+    jpgdata = UIImageJPEGRepresentation(image, 0.75);
+    NSLog(@"Size of JPG data %lu", (unsigned long)[jpgdata length]);
+
     [self dismissModalViewControllerAnimated:YES];
 }
 
 -(BOOL) setParams{
     
-    if(pngData != nil){
-        
+//    if(pngData != nil){
+    if(jpgdata != nil){
         [indicator startAnimating];
         
         request = [NSMutableURLRequest new];
@@ -75,7 +82,7 @@
         [body appendData:[@"Content-Type: image/png" dataUsingEncoding:NSUTF8StringEncoding]];
         [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
         
-        [body appendData:[NSData dataWithData:pngData]];
+        [body appendData:[NSData dataWithData:jpgdata]];
         
         [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
         

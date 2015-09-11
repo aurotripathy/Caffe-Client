@@ -52,7 +52,7 @@
     [self dismissModalViewControllerAnimated:YES];
 }
 
--(BOOL) setParams{
+-(BOOL) setPostParams{
     
 //    if(pngData != nil){
     if(jpgdata != nil){
@@ -90,7 +90,7 @@
         [request setHTTPBody:body];
         [request addValue:[NSString stringWithFormat:@"%lu", (unsigned long)[body length]] forHTTPHeaderField:@"Content-Length"];
         
-        NSLog(@"Length = %lu", (unsigned long)body.length);
+        NSLog(@"HTTP Content Length = %lu", (unsigned long)body.length);
         
         return TRUE;
         
@@ -105,7 +105,7 @@
 - (IBAction) uploadImageSync:(id)sender
 {
     
-    if( [self setParams]){
+    if( [self setPostParams]){
         
         response.text = @""; //clear
                 

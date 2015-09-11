@@ -1,14 +1,19 @@
-//
-//  ViewController.h
-//  SelectImageFromGallery
-//
-//  Created by Vipin on 11/11/14.
-//  Copyright (c) 2014 CoderzHeaven. All rights reserved.
-//
+
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <UINavigationControllerDelegate,
+UIImagePickerControllerDelegate, NSURLConnectionDelegate>{
+
+    IBOutlet UILabel *response;
+    NSMutableData *_responseData;
+    
+}
+
+
+@property (strong, nonatomic) IBOutlet UIImageView* imageView;
+
+- (IBAction) pickImage:(id)sender;
 
 
 @end

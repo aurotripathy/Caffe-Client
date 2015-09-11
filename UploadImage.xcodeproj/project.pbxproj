@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FC3185A71A13AE08006D1184 /* no_image.png in Resources */ = {isa = PBXBuildFile; fileRef = FC3185A61A13AE08006D1184 /* no_image.png */; };
 		FCDEF2911A127135005DB074 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDEF2901A127135005DB074 /* main.m */; };
 		FCDEF2941A127135005DB074 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDEF2931A127135005DB074 /* AppDelegate.m */; };
 		FCDEF2971A127135005DB074 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FCDEF2961A127135005DB074 /* ViewController.m */; };
@@ -27,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FC3185A61A13AE08006D1184 /* no_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = no_image.png; path = ../no_image.png; sourceTree = "<group>"; };
 		FCDEF28B1A127135005DB074 /* SelectImageFromGallery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SelectImageFromGallery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCDEF28F1A127135005DB074 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FCDEF2901A127135005DB074 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 		FCDEF28D1A127135005DB074 /* SelectImageFromGallery */ = {
 			isa = PBXGroup;
 			children = (
+				FC3185A61A13AE08006D1184 /* no_image.png */,
 				FCDEF2921A127135005DB074 /* AppDelegate.h */,
 				FCDEF2931A127135005DB074 /* AppDelegate.m */,
 				FCDEF2951A127135005DB074 /* ViewController.h */,
@@ -175,7 +178,7 @@
 					};
 				};
 			};
-			buildConfigurationList = FCDEF2861A127135005DB074 /* Build configuration list for PBXProject "SelectImageFromGallery" */;
+			buildConfigurationList = FCDEF2861A127135005DB074 /* Build configuration list for PBXProject "UploadImage" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -201,6 +204,7 @@
 			files = (
 				FCDEF29A1A127135005DB074 /* Main.storyboard in Resources */,
 				FCDEF29F1A127135005DB074 /* LaunchScreen.xib in Resources */,
+				FC3185A71A13AE08006D1184 /* no_image.png in Resources */,
 				FCDEF29C1A127135005DB074 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -396,7 +400,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FCDEF2861A127135005DB074 /* Build configuration list for PBXProject "SelectImageFromGallery" */ = {
+		FCDEF2861A127135005DB074 /* Build configuration list for PBXProject "UploadImage" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FCDEF2AC1A127135005DB074 /* Debug */,
@@ -412,6 +416,7 @@
 				FCDEF2B01A127135005DB074 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FCDEF2B11A127135005DB074 /* Build configuration list for PBXNativeTarget "SelectImageFromGalleryTests" */ = {
 			isa = XCConfigurationList;
@@ -420,6 +425,7 @@
 				FCDEF2B31A127135005DB074 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

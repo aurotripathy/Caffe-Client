@@ -145,59 +145,8 @@
     
 }
 
-- (IBAction) uploadImageAsync1:(id)sender
-{
+//deleted uploadImageAsync1,2, & 3
 
-     if( [self setParams]){
-    
-        NSOperationQueue *queue = [[NSOperationQueue alloc]init];
-        
-        // Loads the data for a URL request and executes a handler block on an operation queue when the request completes or fails.
-        [NSURLConnection sendAsynchronousRequest:request
-                                           queue:queue
-                               completionHandler:^(NSURLResponse *urlResponse, NSData *data, NSError *error){
-                                   NSLog(@"Completed");
-                                   
-                                   response.text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                                   
-                                   [indicator stopAnimating];
-                                   [UIApplication sharedApplication].networkActivityIndicatorVisible = FALSE;
-                                   
-                                   if (error) {
-                                       NSLog(@"error:%@", error.localizedDescription);
-                                   }
-                                  
-                               }];
-     }
-    
-
-}
-
-- (IBAction) uploadImageAsync2:(id)sender{
-    
-     if( [self setParams]){
-    
-         // Returns an initialized URL connection and begins to load the data for the URL request.
-         if([[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES]){
-         
-         };
-         
-     }
-    
-}
-
-- (IBAction) uploadImageAsync3:(id)sender{
-    
-    if( [self setParams]){
-        
-       //Creates and returns an initialized URL connection and begins to load the data for the URL request.
-        
-        if([NSURLConnection connectionWithRequest:request delegate:self]){
-            
-        };
-    }
-    
-}
 
 -(void) initPB{
     indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];

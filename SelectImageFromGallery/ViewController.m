@@ -109,38 +109,40 @@
         NSLog(@"RES %@", responseStr);
         
         NSLog(@"RETURN STRING:%@", returnString);
-        
-//        if(error == nil){
-//            response.text = returnString;
-//        }
-        
-        NSError *jsonError = nil;
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: [returnString dataUsingEncoding:NSUTF8StringEncoding] options: NSJSONReadingMutableContainers error: &jsonError];
-        NSArray* result = (NSArray*)[dict objectForKey:@"result"];
-        
-        response.text = @""; //clear
-        //response.textAlignment = UITextAlignmentLeft;
-        //get the first five
-        NSArray* detectedObjs = (NSArray*)[result objectAtIndex:1];
-        for (int i = 0; i <= 4; i++){
-            NSArray * detect = (NSArray*) [detectedObjs objectAtIndex:i];
-            NSLog(@"Detected %@ with probability %@", [detect objectAtIndex:0], [detect objectAtIndex:1]);
-            response.text = [response.text stringByAppendingString:[detect objectAtIndex:0]];
-            response.text = [response.text stringByAppendingString:@", "];
+                
+        if (error == nil) {
+            
+            NSError *jsonError = nil;
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: [returnString dataUsingEncoding:NSUTF8StringEncoding] options: NSJSONReadingMutableContainers error: &jsonError];
+            NSArray* result = (NSArray*)[dict objectForKey:@"result"];
+            
+            response.text = @""; //clear
+            //response.textAlignment = UITextAlignmentLeft;
+            //get the first five
+            NSArray* detectedObjs = (NSArray*)[result objectAtIndex:1];
+            for (int i = 0; i <= 4; i++){
+                NSArray * detect = (NSArray*) [detectedObjs objectAtIndex:i];
+                NSLog(@"Detected %@ with probability %@", [detect objectAtIndex:0], [detect objectAtIndex:1]);
+                response.text = [response.text stringByAppendingString:[detect objectAtIndex:0]];
+                response.text = [response.text stringByAppendingString:@", "];
+            }
+            
+            //get the next five
+            detectedObjs = (NSArray*)[result objectAtIndex:2];
+            //get the first five
+            for (int i = 0; i <= 4; i++){
+                NSArray * detect = (NSArray*) [detectedObjs objectAtIndex:i];
+                NSLog(@"Detected %@ with probability %@", [detect objectAtIndex:0], [detect objectAtIndex:1]);
+                response.text = [response.text stringByAppendingString:[detect objectAtIndex:0]];
+                response.text = [response.text stringByAppendingString:@", "];
+            }
+            
+            [indicator stopAnimating];
+            
         }
-        
-        //get the next five
-        detectedObjs = (NSArray*)[result objectAtIndex:2];
-        //get the first five
-        for (int i = 0; i <= 4; i++){
-            NSArray * detect = (NSArray*) [detectedObjs objectAtIndex:i];
-            NSLog(@"Detected %@ with probability %@", [detect objectAtIndex:0], [detect objectAtIndex:1]);
-            response.text = [response.text stringByAppendingString:[detect objectAtIndex:0]];
-            response.text = [response.text stringByAppendingString:@", "];
+        else {
+            response.text = [response.text stringByAppendingString:@"Error"];
         }
-        
-        [indicator stopAnimating];
-    
     }
     
 }

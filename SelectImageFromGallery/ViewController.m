@@ -100,6 +100,8 @@
     
     if( [self setParams]){
         
+        response.text = @""; //clear
+                
         NSError *error = nil;
         NSURLResponse *responseStr = nil;
         syncResData = [NSURLConnection sendSynchronousRequest:request returningResponse:&responseStr error:&error];
@@ -109,14 +111,14 @@
         NSLog(@"RES %@", responseStr);
         
         NSLog(@"RETURN STRING:%@", returnString);
-                
+        
         if (error == nil) {
             
             NSError *jsonError = nil;
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: [returnString dataUsingEncoding:NSUTF8StringEncoding] options: NSJSONReadingMutableContainers error: &jsonError];
             NSArray* result = (NSArray*)[dict objectForKey:@"result"];
             
-            response.text = @""; //clear
+
             //response.textAlignment = UITextAlignmentLeft;
             //get the first five
             NSArray* detectedObjs = (NSArray*)[result objectAtIndex:1];
@@ -147,7 +149,7 @@
     
 }
 
-//deleted uploadImageAsync1,2, & 3
+//deleted uploadImageAsync1, 2, & 3; use later
 
 
 -(void) initPB{

@@ -18,6 +18,7 @@
     #define URL            @"http://54.67.90.20:5000/classify_upload_json"  // change this URL
     #define NO_CONNECTION  @"No Connection"
     #define NO_IMAGE      @"NO IMAGE SELECTED"
+    #define REQUESTED_COUNT 5
     
 }
 
@@ -35,22 +36,64 @@
     [self presentViewController:pickerController animated:YES completion:nil];
 }
 
+
+// credits http://stackoverflow.com/questions/6141298/how-to-scale-down-a-uiimage-and-make-it-crispy-sharp-at-the-same-time-instead
+- (UIImage *)resizeImage:(UIImage*)image newSize:(CGSize)newSize {
+    CGRect newRect = CGRectIntegral(CGRectMake(0, 0, newSize.width, newSize.height));
+    CGImageRef imageRef = image.CGImage;
+    
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Set the quality level to use when rescaling
+    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
+    CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, newSize.height);
+    
+    CGContextConcatCTM(context, flipVertical);
+    // Draw into the context; this scales the image
+    CGContextDrawImage(context, newRect, imageRef);
+    
+    // Get the resized image from the context and a UIImage
+    CGImageRef newImageRef = CGBitmapContextCreateImage(context);
+    UIImage *newImage = [UIImage imageWithCGImage:newImageRef];
+    
+    CGImageRelease(newImageRef);
+    UIGraphicsEndImageContext();
+    
+    return newImage;
+}
+
+
 #pragma mark -
 #pragma mark UIImagePickerControllerDelegate
+
 
 - (void) imagePickerController:(UIImagePickerController *)picker
          didFinishPickingImage:(UIImage *)image
                    editingInfo:(NSDictionary *)editingInfo
 {
     self.imageView.image = image;
-    pngData = UIImagePNGRepresentation(image);
+    
+    NSLog(@"Original Image size %f, %f", image.size.height, image.size.width);
+    
+    //resize before we compress
+    UIImage *resizedImage = [self resizeImage:image newSize:CGSizeMake(320, 480)];
+    NSLog(@"Resized Image size %f, %f", resizedImage.size.height, resizedImage.size.width);
+    
+    //pngData = UIImagePNGRepresentation(image);
+    pngData = UIImagePNGRepresentation(resizedImage);
     NSLog(@"Size of PNG data %lu", (unsigned long)[pngData length]);
     
-    jpgdata = UIImageJPEGRepresentation(image, 0.75);
+    
+    //jpgdata = UIImageJPEGRepresentation(image, 0.75);
+    jpgdata = UIImageJPEGRepresentation(resizedImage, 0.60);
     NSLog(@"Size of JPG data %lu", (unsigned long)[jpgdata length]);
 
     [self dismissModalViewControllerAnimated:YES];
 }
+
+
+
 
 -(BOOL) setPostParams{
     
@@ -79,6 +122,7 @@
         [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"imagefile\"; filename=\"%@.png\"\r\n", @"Uploaded_file"] dataUsingEncoding:NSUTF8StringEncoding]];
         
         //auro
+        // TODO should the mime type be image/jpeg
         [body appendData:[@"Content-Type: image/png" dataUsingEncoding:NSUTF8StringEncoding]];
         [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
         
@@ -129,17 +173,18 @@
             //response.textAlignment = UITextAlignmentLeft;
             //get the first five
             NSArray* detectedObjs = (NSArray*)[result objectAtIndex:1];
-            for (int i = 0; i <= 4; i++){
+            response.text = [response.text stringByAppendingString:@"MORE SPECIFIC: "];
+            for (int i = 0; i <= REQUESTED_COUNT - 1; i++){
                 NSArray * detect = (NSArray*) [detectedObjs objectAtIndex:i];
                 NSLog(@"Detected %@ with probability %@", [detect objectAtIndex:0], [detect objectAtIndex:1]);
                 response.text = [response.text stringByAppendingString:[detect objectAtIndex:0]];
                 response.text = [response.text stringByAppendingString:@", "];
             }
-            
+            response.text = [response.text stringByAppendingString:@"\n"];
             //get the next five
             detectedObjs = (NSArray*)[result objectAtIndex:2];
-            //get the first five
-            for (int i = 0; i <= 4; i++){
+            response.text = [response.text stringByAppendingString:@"MORE GENERIC: "];
+            for (int i = 0; i <= REQUESTED_COUNT - 1; i++){
                 NSArray * detect = (NSArray*) [detectedObjs objectAtIndex:i];
                 NSLog(@"Detected %@ with probability %@", [detect objectAtIndex:0], [detect objectAtIndex:1]);
                 response.text = [response.text stringByAppendingString:[detect objectAtIndex:0]];

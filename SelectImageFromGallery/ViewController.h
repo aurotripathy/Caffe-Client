@@ -15,6 +15,8 @@ UIImagePickerControllerDelegate, NSURLConnectionDelegate>{
 
 - (IBAction) pickImage:(id)sender;
 
+- (IBAction)tagRegion:(id)sender;
+
 
 @end
 

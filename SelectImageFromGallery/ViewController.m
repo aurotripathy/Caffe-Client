@@ -44,30 +44,38 @@
 
 
 // credits http://stackoverflow.com/questions/6141298/how-to-scale-down-a-uiimage-and-make-it-crispy-sharp-at-the-same-time-instead
-- (UIImage *)resizeImage:(UIImage*)image newSize:(CGSize)newSize {
-    CGRect newRect = CGRectIntegral(CGRectMake(0, 0, newSize.width, newSize.height));
-    NSLog(@"Resize dimensions hieght=%f, width=%f", newSize.height, newSize.width);
-    CGImageRef imageRef = image.CGImage;
+- (UIImage *)resizeImage:(UIImage*)image newSize:(CGSize)newSize
+{
     
-    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    // Set the quality level to use when rescaling
-    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
-    CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, newSize.height);
-    
-    CGContextConcatCTM(context, flipVertical);
-    // Draw into the context; this scales the image
-    CGContextDrawImage(context, newRect, imageRef);
-    
-    // Get the resized image from the context and a UIImage
-    CGImageRef newImageRef = CGBitmapContextCreateImage(context);
-    UIImage *newImage = [UIImage imageWithCGImage:newImageRef];
-    
-    CGImageRelease(newImageRef);
-    UIGraphicsEndImageContext();
-    
-    return newImage;
+    if ((image.size.width > 512) && (image.size.height > 512)) { //go about resizing, otherwise leave alone
+        CGRect newRect = CGRectIntegral(CGRectMake(0, 0, newSize.width, newSize.height));
+        NSLog(@"Resize dimensions hieght=%f, width=%f", newSize.height, newSize.width);
+        CGImageRef imageRef = image.CGImage;
+        
+        UIGraphicsBeginImageContextWithOptions(newSize, NO, 0);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        
+        // Set the quality level to use when rescaling
+        CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
+        CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, newSize.height);
+        
+        CGContextConcatCTM(context, flipVertical);
+        // Draw into the context; this scales the image
+        CGContextDrawImage(context, newRect, imageRef);
+        
+        // Get the resized image from the context and a UIImage
+        CGImageRef newImageRef = CGBitmapContextCreateImage(context);
+        UIImage *newImage = [UIImage imageWithCGImage:newImageRef];
+        
+        CGImageRelease(newImageRef);
+        UIGraphicsEndImageContext();
+        
+        return newImage;
+    }
+    else {
+        NSLog(@"No resize done");
+        return image;
+    }
 }
 
 
@@ -188,7 +196,12 @@
                     NSArray * detect = (NSArray*) [detectedObjs objectAtIndex:i];
                     NSLog(@"Detected %@ with probability %@", [detect objectAtIndex:0], [detect objectAtIndex:1]);
                     response.text = [response.text stringByAppendingString:[detect objectAtIndex:0]];
-                    response.text = [response.text stringByAppendingString:[detect objectAtIndex:1]];                  response.text = [response.text stringByAppendingString:@", "];
+                    
+                    //round up the probability to two decimal places
+                    float prob = [[detect objectAtIndex:1] floatValue];
+                    //float truncFloat = [[NSString stringWithFormat:@"%.2f", prob] floatValue];
+                    response.text = [response.text stringByAppendingString:[NSString stringWithFormat:@"(%.2f)", prob]];
+                    response.text = [response.text stringByAppendingString:@", "];
                 }
                 response.text = [response.text stringByAppendingString:@"\n"];
                 //get the next five
@@ -220,16 +233,27 @@
     
     
     NSLog(@"Image to crop: height=%f width=%f", imageToCrop.size.height, imageToCrop.size.width);
+    
+    //scale the dimensions based on the actual dimensions not the display dimensions.
+    float ratioX = imageToCrop.size.width/300; //TODO: remove hard constants alter
+    float ratioY = imageToCrop.size.height/250;
+    
+    rect.origin.x *= ratioX;
+    rect.origin.y *= ratioY;
+    
+    rect.size.width *=ratioY;
+    rect.size.height *=ratioX;
+    
     NSLog(@"Rect to crop: Org.x=%f Org.y=%f hieght=%f width=%f", rect.origin.x, rect.origin.y, rect.size.height, rect.size.width);
     
     CGImageRef imageRef = CGImageCreateWithImageInRect([imageToCrop CGImage], rect);
     UIImage *cropped = [UIImage imageWithCGImage:imageRef];
     CGImageRelease(imageRef);
     
-    self.imageView = [[UIImageView alloc] initWithImage:cropped];
-    [self.imageView setFrame:CGRectMake(0, 600, 128, 128)];
-    [[self view] addSubview:self.imageView];
-    
+//    self.imageView = [[UIImageView alloc] initWithImage:cropped];
+//    [self.imageView setFrame:CGRectMake(0, 500, rect.size.width, rect.size.height)];
+//    [[self view] addSubview:self.imageView];
+   
     return cropped;
     
     
@@ -270,7 +294,7 @@
     // Create and show the new image from bitmap data
     // credits http://iosdevelopertips.com/graphics/how-to-crop-an-image.html
     self.imageView = [[UIImageView alloc] initWithImage:croppedImg];
-    [self.imageView setFrame:CGRectMake(200, 600, 128, 128)];
+    [self.imageView setFrame:CGRectMake(200, 500, 128, 128)];
     [[self view] addSubview:self.imageView];
     //[self.imageView release];
     

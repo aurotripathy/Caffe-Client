@@ -17,7 +17,7 @@
     UIActivityIndicatorView *indicator;
     UIView *myBox;
     
-    #define URL            @"http://54.67.90.20:5000/classify_upload_json"  // change this URL
+    #define URL            @"http://54.67.90.20:5000/classify_upload_json"  // change this URL when the server moves
     #define NO_CONNECTION  @"No Connection"
     #define NO_IMAGE       @"NO IMAGE SELECTED"
     #define REQUESTED_COUNT 5
@@ -328,7 +328,7 @@
     
     UIImage *croppedImg = nil;
     
-    static bool firstTime = true;
+//    static bool firstTime = true;
     
     UITouch *touch = [touches anyObject];
     CGPoint currentPoint = [touch locationInView:self.imageView]; //coordinates of the touch
@@ -336,14 +336,14 @@
     //UIView *myBox  = [[UIView alloc] initWithFrame:CGRectMake(currentPoint.x, currentPoint.y, 128, 128)];
     myBox  = [[UIView alloc] initWithFrame:CGRectMake(currentPoint.x, currentPoint.y, 128, 128)];
     
-    if (firstTime) {
+//    if (firstTime) {
         myBox.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.0];
         myBox.layer.borderWidth = 1.0;
         myBox.layer.borderColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0].CGColor;
         [self.imageView addSubview:myBox];
-        firstTime = false;
+//        firstTime = false;
         isRegionClassify = true;
-    }
+//    }
     
     CGRect cropRect = CGRectMake(currentPoint.x , currentPoint.y,   128,  128);
     

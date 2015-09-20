@@ -15,6 +15,7 @@
     NSData *syncResData;
     NSMutableURLRequest *request;
     UIActivityIndicatorView *indicator;
+    UIView *myBox;
     
     #define URL            @"http://54.67.90.20:5000/classify_upload_json"  // change this URL
     #define NO_CONNECTION  @"No Connection"
@@ -33,6 +34,64 @@
 
 - (IBAction)tagRegion:(id)sender {
     isRegionClassify = true;
+    [myBox removeFromSuperview];
+    
+    
+    if( [self setPostParams]){
+        
+        response.text = @""; //clear
+        
+        NSError *error = nil;
+        NSURLResponse *responseStr = nil;
+        syncResData = [NSURLConnection sendSynchronousRequest:request returningResponse:&responseStr error:&error];
+        NSString *returnString = [[NSString alloc] initWithData:syncResData encoding:NSUTF8StringEncoding];
+        
+        NSLog(@"ERROR %@", error);
+        NSLog(@"RES %@", responseStr);
+        
+        NSLog(@"RETURN STRING:%@", returnString);
+        
+        if (error == nil) {
+            
+            NSError *jsonError = nil;
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: [returnString dataUsingEncoding:NSUTF8StringEncoding] options: NSJSONReadingMutableContainers error: &jsonError];
+            NSArray* result = (NSArray*)[dict objectForKey:@"result"];
+            
+            
+            //response.textAlignment = UITextAlignmentLeft;
+            //get the first five
+            NSArray* detectedObjs = (NSArray*)[result objectAtIndex:1];
+            response.text = [response.text stringByAppendingString:@"MORE SPECIFIC: "];
+            for (int i = 0; i <= REQUESTED_COUNT - 1; i++){
+                NSArray * detect = (NSArray*) [detectedObjs objectAtIndex:i];
+                NSLog(@"Detected %@ with probability %@", [detect objectAtIndex:0], [detect objectAtIndex:1]);
+                response.text = [response.text stringByAppendingString:[detect objectAtIndex:0]];
+                
+                //round up the probability to two decimal places
+                float prob = [[detect objectAtIndex:1] floatValue];
+                //float truncFloat = [[NSString stringWithFormat:@"%.2f", prob] floatValue];
+                response.text = [response.text stringByAppendingString:[NSString stringWithFormat:@"(%.2f)", prob]];
+                response.text = [response.text stringByAppendingString:@", "];
+            }
+            response.text = [response.text stringByAppendingString:@"\n"];
+            //get the next five
+            detectedObjs = (NSArray*)[result objectAtIndex:2];
+            response.text = [response.text stringByAppendingString:@"MORE GENERIC: "];
+            for (int i = 0; i <= REQUESTED_COUNT - 1; i++){
+                NSArray * detect = (NSArray*) [detectedObjs objectAtIndex:i];
+                NSLog(@"Detected %@ with probability %@", [detect objectAtIndex:0], [detect objectAtIndex:1]);
+                response.text = [response.text stringByAppendingString:[detect objectAtIndex:0]];
+                response.text = [response.text stringByAppendingString:@", "];
+            }
+            
+            [indicator stopAnimating];
+            
+        }
+        else {
+            response.text = [response.text stringByAppendingString:@"Error"];
+        }
+    }
+
 }
 
 - (IBAction) pickImage:(id)sender{
@@ -166,61 +225,63 @@
 }
 
 - (IBAction)tagEntire:(id)sender {
+    
+    isRegionClassify = false;
+    
+    if( [self setPostParams]){
         
-        if( [self setPostParams]){
+        response.text = @""; //clear
+        
+        NSError *error = nil;
+        NSURLResponse *responseStr = nil;
+        syncResData = [NSURLConnection sendSynchronousRequest:request returningResponse:&responseStr error:&error];
+        NSString *returnString = [[NSString alloc] initWithData:syncResData encoding:NSUTF8StringEncoding];
+        
+        NSLog(@"ERROR %@", error);
+        NSLog(@"RES %@", responseStr);
+        
+        NSLog(@"RETURN STRING:%@", returnString);
+        
+        if (error == nil) {
             
-            response.text = @""; //clear
+            NSError *jsonError = nil;
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: [returnString dataUsingEncoding:NSUTF8StringEncoding] options: NSJSONReadingMutableContainers error: &jsonError];
+            NSArray* result = (NSArray*)[dict objectForKey:@"result"];
             
-            NSError *error = nil;
-            NSURLResponse *responseStr = nil;
-            syncResData = [NSURLConnection sendSynchronousRequest:request returningResponse:&responseStr error:&error];
-            NSString *returnString = [[NSString alloc] initWithData:syncResData encoding:NSUTF8StringEncoding];
             
-            NSLog(@"ERROR %@", error);
-            NSLog(@"RES %@", responseStr);
-            
-            NSLog(@"RETURN STRING:%@", returnString);
-            
-            if (error == nil) {
+            //response.textAlignment = UITextAlignmentLeft;
+            //get the first five
+            NSArray* detectedObjs = (NSArray*)[result objectAtIndex:1];
+            response.text = [response.text stringByAppendingString:@"MORE SPECIFIC: "];
+            for (int i = 0; i <= REQUESTED_COUNT - 1; i++){
+                NSArray * detect = (NSArray*) [detectedObjs objectAtIndex:i];
+                NSLog(@"Detected %@ with probability %@", [detect objectAtIndex:0], [detect objectAtIndex:1]);
+                response.text = [response.text stringByAppendingString:[detect objectAtIndex:0]];
                 
-                NSError *jsonError = nil;
-                NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: [returnString dataUsingEncoding:NSUTF8StringEncoding] options: NSJSONReadingMutableContainers error: &jsonError];
-                NSArray* result = (NSArray*)[dict objectForKey:@"result"];
-                
-                
-                //response.textAlignment = UITextAlignmentLeft;
-                //get the first five
-                NSArray* detectedObjs = (NSArray*)[result objectAtIndex:1];
-                response.text = [response.text stringByAppendingString:@"MORE SPECIFIC: "];
-                for (int i = 0; i <= REQUESTED_COUNT - 1; i++){
-                    NSArray * detect = (NSArray*) [detectedObjs objectAtIndex:i];
-                    NSLog(@"Detected %@ with probability %@", [detect objectAtIndex:0], [detect objectAtIndex:1]);
-                    response.text = [response.text stringByAppendingString:[detect objectAtIndex:0]];
-                    
-                    //round up the probability to two decimal places
-                    float prob = [[detect objectAtIndex:1] floatValue];
-                    //float truncFloat = [[NSString stringWithFormat:@"%.2f", prob] floatValue];
-                    response.text = [response.text stringByAppendingString:[NSString stringWithFormat:@"(%.2f)", prob]];
-                    response.text = [response.text stringByAppendingString:@", "];
-                }
-                response.text = [response.text stringByAppendingString:@"\n"];
-                //get the next five
-                detectedObjs = (NSArray*)[result objectAtIndex:2];
-                response.text = [response.text stringByAppendingString:@"MORE GENERIC: "];
-                for (int i = 0; i <= REQUESTED_COUNT - 1; i++){
-                    NSArray * detect = (NSArray*) [detectedObjs objectAtIndex:i];
-                    NSLog(@"Detected %@ with probability %@", [detect objectAtIndex:0], [detect objectAtIndex:1]);
-                    response.text = [response.text stringByAppendingString:[detect objectAtIndex:0]];
-                    response.text = [response.text stringByAppendingString:@", "];
-                }
-                
-                [indicator stopAnimating];
-                
+                //round up the probability to two decimal places
+                float prob = [[detect objectAtIndex:1] floatValue];
+                //float truncFloat = [[NSString stringWithFormat:@"%.2f", prob] floatValue];
+                response.text = [response.text stringByAppendingString:[NSString stringWithFormat:@"(%.2f)", prob]];
+                response.text = [response.text stringByAppendingString:@", "];
             }
-            else {
-                response.text = [response.text stringByAppendingString:@"Error"];
+            response.text = [response.text stringByAppendingString:@"\n"];
+            //get the next five
+            detectedObjs = (NSArray*)[result objectAtIndex:2];
+            response.text = [response.text stringByAppendingString:@"MORE GENERIC: "];
+            for (int i = 0; i <= REQUESTED_COUNT - 1; i++){
+                NSArray * detect = (NSArray*) [detectedObjs objectAtIndex:i];
+                NSLog(@"Detected %@ with probability %@", [detect objectAtIndex:0], [detect objectAtIndex:1]);
+                response.text = [response.text stringByAppendingString:[detect objectAtIndex:0]];
+                response.text = [response.text stringByAppendingString:@", "];
             }
+            
+            [indicator stopAnimating];
+            
         }
+        else {
+            response.text = [response.text stringByAppendingString:@"Error"];
+        }
+    }
 }
 
 
@@ -272,8 +333,9 @@
     UITouch *touch = [touches anyObject];
     CGPoint currentPoint = [touch locationInView:self.imageView]; //coordinates of the touch
     
-    UIView *myBox  = [[UIView alloc] initWithFrame:CGRectMake(currentPoint.x, currentPoint.y, 128, 128)];
-
+    //UIView *myBox  = [[UIView alloc] initWithFrame:CGRectMake(currentPoint.x, currentPoint.y, 128, 128)];
+    myBox  = [[UIView alloc] initWithFrame:CGRectMake(currentPoint.x, currentPoint.y, 128, 128)];
+    
     if (firstTime) {
         myBox.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.0];
         myBox.layer.borderWidth = 1.0;
@@ -299,10 +361,13 @@
     //[self.imageView release];
     
     
-    jpgSubImgData = [[NSData alloc] initWithData:UIImageJPEGRepresentation((croppedImg), 0.75)];
+    jpgSubImgData = [[NSData alloc] initWithData:UIImageJPEGRepresentation((croppedImg), 1.0)];
     NSLog(@"Cropped Image (jpeg) : size=%lu", (unsigned long)jpgSubImgData.length);
     
+
+    
 }
+
 -(void) initPB{
     indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     indicator.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width)/2, ([UIScreen mainScreen].bounds.size.height)/2 , 40.0, 40.0);

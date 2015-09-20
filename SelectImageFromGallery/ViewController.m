@@ -293,26 +293,15 @@
 
     // Create and show the new image from bitmap data
     // credits http://iosdevelopertips.com/graphics/how-to-crop-an-image.html
-    self.imageView = [[UIImageView alloc] initWithImage:croppedImg];
-    [self.imageView setFrame:CGRectMake(200, 500, 128, 128)];
-    [[self view] addSubview:self.imageView];
+//    self.imageView = [[UIImageView alloc] initWithImage:croppedImg];
+//    [self.imageView setFrame:CGRectMake(200, 500, 128, 128)];
+//    [[self view] addSubview:self.imageView];
     //[self.imageView release];
     
     
     jpgSubImgData = [[NSData alloc] initWithData:UIImageJPEGRepresentation((croppedImg), 0.75)];
     NSLog(@"Cropped Image (jpeg) : size=%lu", (unsigned long)jpgSubImgData.length);
     
-    // Blur Effect
-    //croppedImg = [croppedImg imageWithGaussianBlur9];
-    
-    // Contrast Effect
-    // croppedImg = [croppedImg imageWithContrast:50];
-    
-    
-    
-    //croppedImg = [self roundedRectImageFromImage:croppedImg withRadious:4];
-    
-    //imageView.image = [self addImageToImage:imageView.image withImage2:croppedImg andRect:cropRect];
 }
 -(void) initPB{
     indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];

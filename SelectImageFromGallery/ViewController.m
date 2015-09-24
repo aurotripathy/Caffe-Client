@@ -17,7 +17,7 @@
     UIActivityIndicatorView *indicator;
     UIView *myBox;
     
-    #define URL            @"http://54.67.90.20:5000/classify_upload_json"  // change this URL when the server moves
+    #define URL            @"http://54.67.90.20:5000/classify_upload_json"  // change this URL when the caffe server moves
     #define NO_CONNECTION  @"No Connection"
     #define NO_IMAGE       @"NO IMAGE SELECTED"
     #define REQUESTED_COUNT 5

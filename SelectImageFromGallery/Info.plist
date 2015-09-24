@@ -39,6 +39,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
     
+    <!---Fix this sec hole asap-->
     <key>NSAppTransportSecurity</key>
     <dict>
         <key>NSAllowsArbitraryLoads</key>

@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
+//test suite may not apply; need to be updated
+
 @interface SelectImageFromGalleryTests : XCTestCase
 
 @end
